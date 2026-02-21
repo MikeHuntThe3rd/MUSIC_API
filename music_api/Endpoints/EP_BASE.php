@@ -98,8 +98,6 @@ class EP_BASE {
                 }
                 $params->prms["id"] = $id;
                 $this->db->SingleQuery($sql , $params->prms);
-                echo $sql;
-                var_dump($params->prms);
                 $result = ["data" => "update success"];
                 return json_encode($result);
             }
