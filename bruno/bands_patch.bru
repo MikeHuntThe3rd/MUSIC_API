@@ -1,0 +1,23 @@
+meta {
+  name: bands_patch
+  type: http
+  seq: 4
+}
+
+patch {
+  url: http://localhost:8000/bands/update/3
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "dsa",
+    "img_PATH": "dsa"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

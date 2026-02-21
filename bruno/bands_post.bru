@@ -1,0 +1,23 @@
+meta {
+  name: bands_post
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8000/bands
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "asd",
+    "img_PATH": "ASD"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

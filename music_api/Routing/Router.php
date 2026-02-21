@@ -1,7 +1,7 @@
 <?php
 
 namespace Music\Routing;
-
+use Music\Endpoints\EP_bands;
 class Router{
     public function ReqHandle(){
         $MethodType = strtoupper($_SERVER["REQUEST_METHOD"]);
@@ -26,10 +26,11 @@ class Router{
     }
     public function GETreq($URI){
         if(str_contains($URI, "/musicians")) {
-
+            
         }
         else if(str_contains($URI, "/bands")){
-
+            $asd = new EP_bands();
+            echo $asd->GET($URI);
         }
         else if(str_contains($URI, "/music")){
             
@@ -40,13 +41,14 @@ class Router{
     }
     
     public function POSTreq($URI){
-        $data = json_decode(file_get_contents('php://input'));
+        $body = json_decode(file_get_contents('php://input'), true);
         $id = $data["id"] ?? null;
         if(str_contains($URI, "/musicians")) {
 
         }
         else if(str_contains($URI, "/bands")){
-
+            $asd = new EP_bands();
+            echo $asd->POST($URI, $body);
         }
         else if(str_contains($URI, "/music")){
             
@@ -57,12 +59,13 @@ class Router{
     }
     
     public function PATCHreq($URI){
-        $data = json_decode(file_get_contents('php://input'));
+        $body = json_decode(file_get_contents('php://input'), true);
         if(str_contains($URI, "/musicians")) {
 
         }
         else if(str_contains($URI, "/bands")){
-
+            $asd = new EP_bands();
+            echo $asd->UPDATE($URI, $body);
         }
         else if(str_contains($URI, "/music")){
             
@@ -73,12 +76,13 @@ class Router{
     }
 
     public function DELETEreq($URI){
-        $data = json_decode(file_get_contents('php://input'));
+        $data = json_decode(file_get_contents('php://input'), true);
         if(str_contains($URI, "/musicians")) {
 
         }
         else if(str_contains($URI, "/bands")){
-
+            $asd = new EP_bands();
+            echo $asd->DELETE($URI);
         }
         else if(str_contains($URI, "/music")){
             

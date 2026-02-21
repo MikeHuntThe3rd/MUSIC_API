@@ -7,7 +7,7 @@ use Music\Endpoints\prm;
 class EP_BASE {
     public db $db;
     public static string $TABLE = "";
-    public static const COLS = [];
+    public const COLS = [];
     public function __construct(){
         $this->db = db::getInstance();
     }
@@ -30,15 +30,15 @@ class EP_BASE {
             if($id != 0){
                 $data = $this->db->SingleQuery("SELECT * FROM `". static::$TABLE ."` WHERE id = :id;", ["id" => $id]);
                 $result = ["data" => $data];
-                echo json_encode($result);
+                return json_encode($result);
             }
             else{
-                echo json_encode(["response" => "invalid id"]);
+                return json_encode(["response" => "invalid id"]);
             }
         }
         else{
             $result = ["data" => $this->db->SingleQuery("SELECT * FROM `". static::$TABLE ."`;")];
-            echo json_encode($result);
+            return json_encode($result);
         }
     }
     public function DELETE($URL){
@@ -47,41 +47,33 @@ class EP_BASE {
             $id = (int)end($arr);
             if($id != 0){
                 $data = $this->db->SingleQuery("DELETE FROM `". static::$TABLE ."` WHERE id = :id;", ["id" => $id]);
-                $res = "deletion success " . (string)$data;
+                $res = "deletion: " . (string)$data["data"];
                 $result = ["data" => $res];
-                echo json_encode($result);
+                return json_encode($result);
             }
             else{
-                echo json_encode(["response" => "invalid id"]);
+                return json_encode(["response" => "invalid id"]);
             }
         }
         else{
             $result = ["response" => "invalid query format"];
-            echo json_encode($result);
+            return json_encode($result);
         }
     }
     public function POST($URL, $BODY){
-        if(str_contains($URL, static::$TABLE . "/create")){
-            foreach(static::COLS as $col){
+        foreach(static::COLS as $col){
                 if(!isset($BODY[$col])){
-                    echo json_encode(["response" => "POST body is missing parameters"]);
-                    return;
+                    return json_encode(["response" => "POST body is missing parameters"]);
                 }
             }
             if(count($BODY) > count(static::COLS)){
-                echo json_encode(["response" => "POST body has too many parameters"]);
-                return;
+                return json_encode(["response" => "POST body has too many parameters"]);
             }
             $params = $this->FormatParams($BODY);
-            $cls = implode(", ", $BODY);
+            $cls = implode(", ", static::COLS);
             $this->db->SingleQuery("INSERT INTO `". static::$TABLE ."` (". $cls .") VALUES(". implode(", ", $params->valNames) .");", $params->prms);
             $result = ["data" => "insert success"];
-            echo json_encode($result);
-        }
-        else{
-            $result = ["response" => "invalid query format"];
-            echo json_encode($result);
-        }
+            return json_encode($result);
     }
     public function UPDATE($URL, $BODY){
         if(str_contains($URL,  static::$TABLE . "/update/")){
@@ -90,32 +82,34 @@ class EP_BASE {
             if($id != 0){
                 foreach(static::COLS as $col){
                     if(!isset($BODY[$col])){
-                        echo json_encode(["response" => "POST body is missing parameters"]);
-                        return;
+                        return json_encode(["response" => "POST body is missing parameters"]);
                     }
                 }
                 if(count($BODY) > count(static::COLS)){
-                    echo json_encode(["response" => "POST body has too many parameters"]);
-                    return;
+                    return json_encode(["response" => "POST body has too many parameters"]);
                 }
                 $params = $this->FormatParams($BODY);
                 $sql = "UPDATE `". static::$TABLE ."`";
                 for($i = 0 ; $i < count($params->prms); $i++){
-                    $val = " SET ". static::COLS[$i] ." = ". $params->valNames[$i];
-                    $sql += ($i + 1 != count($params->prms)) ? $val : $val . "WHERE id = :id;";
+                    if($i == 0) $sql .= " SET ";
+                    else $sql .= ", ";
+                    $val = static::COLS[$i] ." = ". $params->valNames[$i];
+                    $sql .= ($i + 1 != count($params->prms)) ? $val : $val . " WHERE id = :id;";
                 }
                 $params->prms["id"] = $id;
                 $this->db->SingleQuery($sql , $params->prms);
+                echo $sql;
+                var_dump($params->prms);
                 $result = ["data" => "update success"];
-                echo json_encode($result);
+                return json_encode($result);
             }
             else{
-                echo json_encode(["response" => "invalid id"]);
+                return json_encode(["response" => "invalid id"]);
             }
         }
         else{
             $result = ["response" => "invalid query format"];
-            echo json_encode($result);
+            return json_encode($result);
         }
     }
 }
