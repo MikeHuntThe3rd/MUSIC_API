@@ -24,7 +24,7 @@ class Router {
 
                 $return = match ($method) {
                     "GET"    => print $api->GET($uri),
-                    "POST"   => print $api->POST($uri, $body),
+                    "POST"   => print $api->POST($body),
                     "PATCH"  => print $api->UPDATE($uri, $body),
                     "DELETE" => print $api->DELETE($uri),
                     default  => "error method not allowed"

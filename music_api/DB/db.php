@@ -52,6 +52,9 @@ class db {
             if (str_starts_with(strtoupper(trim($sql)), 'SELECT')) {
                 return ["success" => true, "data" => $stmt->fetchAll() ?: []];
             }
+            else if (str_starts_with(strtoupper(trim($sql)), 'INSERT')) {
+                return ["success" => true, "data" => $this->pdo->lastInsertId()];
+            }
 
             return ["success" => true, "data" => "success"];
 
