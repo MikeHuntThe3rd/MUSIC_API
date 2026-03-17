@@ -11,7 +11,7 @@ class EP_BASE {
     public function __construct(){
         $this->db = db::getInstance();
     }
-    private function FormatParams($data): prm {
+    protected function FormatParams($data): prm {
         $vals = [];
         $params = [];
         $index = 0;
