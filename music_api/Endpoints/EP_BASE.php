@@ -12,10 +12,14 @@ class EP_BASE {
         $this->db = db::getInstance();
     }
     protected function FormatParams($data): prm {
+        $formatted = [];
+        foreach(static::COLS as $col){
+            $formatted[$col] = (isset($data[$col])) ? $data[$col] :  null;
+        }
         $vals = [];
         $params = [];
         $index = 0;
-        foreach($data as $curr){
+        foreach($formatted as $curr){
             $key = ":" . static::COLS[$index];
             $vals[] = $key;
             $params[$key] = $curr;
